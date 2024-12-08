@@ -8,7 +8,7 @@ from pycocotools.coco import COCO
 from torchvision import transforms
 from yolox.data import ValTransform
 
-def get_mot_loader(dataset, test, data_dir="data", workers=4, size=(800, 1440)):
+def get_mot_loader(dataset, test, data_dir="/kaggle/input/mot17-converted-coco", workers=4, size=(800, 1440)):
     # Different dataset paths
     if dataset == "mot17":
         direc = "MOT17"
