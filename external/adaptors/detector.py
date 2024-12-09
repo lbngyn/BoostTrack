@@ -43,6 +43,9 @@ class Detector(torch.nn.Module):
             self.initialize_model()
 
         with torch.no_grad():
+        # Kiểm tra và chuyển đổi sang tensor nếu cần
+            if not isinstance(batch, torch.Tensor):
+                batch = torch.tensor(batch).cuda()  # Chuyển sang tensor và đưa lên GPU
             batch = batch.half()
             output = self.model(batch)
         if output is not None:
