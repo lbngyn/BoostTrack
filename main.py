@@ -96,6 +96,10 @@ def main():
             tracker = BoostTrack(video_name=video_name)
 
         pred = det(img, tag)
+        print("Predict Value:", pred) 
+        print("Predict type:", type(pred)) 
+        print(len(pred)) 
+        print(len(pred[0]))
         start_time = time.time()
 
         if pred is None:
