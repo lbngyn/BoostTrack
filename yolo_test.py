@@ -136,6 +136,7 @@ if __name__ == "__main__":
 
     # Load ảnh
     img = load_image(image_path)
+    print(img)
 
     # Dự đoán
     results = detector.predict(img)
