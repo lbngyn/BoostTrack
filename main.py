@@ -79,7 +79,7 @@ def main():
     det = YoloV10Detector(model_path=detector_path, img_size=size)
     
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
-    
+
     tracker = None
     results = {}
     frame_count = 0
@@ -115,7 +115,7 @@ def main():
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
-        pred = pred.torch.tensor()
+        pred = torch.tensor(pred)
 
         start_time = time.time()
 
