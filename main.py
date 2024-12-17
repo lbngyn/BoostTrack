@@ -98,6 +98,7 @@ def main():
         # img = img.cuda()
         new_img = np_img[0].cuda()
         print(new_img)
+        print(np_img[0].shape)
         # visulize(new_img)
 
         # Initialize tracker on first frame of a new video
