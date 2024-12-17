@@ -43,6 +43,7 @@ def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/ot
 
         frame_count += 1
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame_rgb = torch.cuda(frame_rgb)
         frame_rgb = frame_rgb.to(next(det.model.parameters()).device)  # Move data to the same device as the model
 
         # Object detection using YOLOv10x
