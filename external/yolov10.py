@@ -72,6 +72,7 @@ class YoloV10Detector:
         labels = np.array(labels)
 
         # Chuyển bounding boxes về kích thước ảnh gốc
+        print(img_shape) 
         w, h = img_shape
         scale_w, scale_h = w / self.img_size[1], h / self.img_size[0]
         boxes[:, [0, 2]] *= scale_w
