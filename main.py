@@ -1,6 +1,7 @@
 import os
 import shutil
 import time
+import cv2
 
 import dataset
 import utils
@@ -96,10 +97,10 @@ def main():
             results[video_name] = []
 
         # img = img.cuda()
-        new_img = np_img[0].cuda()
-        print(new_img)
-        print(np_img[0].shape)
-        print(info)
+        img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
+        img = cv2.imread(img_path)
+        img = img.cuda()
+        print(img)
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
         if frame_id == 1:
@@ -110,7 +111,7 @@ def main():
             tracker = BoostTrack(video_name=video_name)
 
         # Sử dụng YOLOv10x để dự đoán
-        pred = det.predict(new_img)
+        pred = det.predict(img)
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
