@@ -115,6 +115,7 @@ def main():
 
         # Sử dụng YOLOv10x để dự đoán
         pred = det.predict(img)
+        if pred == []: continue
         pred = torch.tensor(pred)
 
         start_time = time.time()
