@@ -118,7 +118,7 @@ class EmbeddingComputer:
         crops = []
         if self.grid_off:
             # Basic embeddings
-            h, w = img.shape[:2]
+            w, h = img.shape[:2]
             results = np.round(bbox).astype(np.int32)
             results[:, 0] = results[:, 0].clip(0, w)
             results[:, 1] = results[:, 1].clip(0, h)
@@ -128,7 +128,8 @@ class EmbeddingComputer:
             crops = []
             for p in results:
                 crop = img[p[1] : p[3], p[0] : p[2]]
-                print(f"Bounding box: {bbox}")
+                print(p)
+                # print(f"Bounding box: {bbox}")
                 print(f"Crop shape: {crop.shape}")
 
                 crop = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
