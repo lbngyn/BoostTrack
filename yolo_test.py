@@ -40,47 +40,49 @@ class YoloV10Detector:
         img_tensor = img_tensor.to(self.device)
         return img_tensor
 
-    def postprocess(self, preds, img_shape):
+    def postprocess(self, results, img_shape):
         """
         Xử lý kết quả dự đoán.
-        :param preds: Kết quả từ model (raw output).
+        :param results: Kết quả từ model (raw output).
         :param img_shape: Kích thước ảnh gốc (H, W).
         :return: Tensor các bounding boxes [(x1, y1, x2, y2, conf)].
         """
         boxes = []
         confidences = []
+        labels = []
+        print(labels)
 
         # Giả sử preds đã là tensor [num_boxes, 6] (x1, y1, x2, y2, conf, class)
-        preds = preds[0]  # Bỏ batch dimension
-
-        for pred in preds:
-            x1, y1, x2, y2, conf = pred[:5]
-            if conf > self.conf_thresh:
-                boxes.append([x1, y1, x2, y2])
-                confidences.append(conf)
+        for result in results:
+            boxes.extend(result.boxes.xywh.cpu().numpy())  # Tọa độ bounding box
+            confidences.extend(result.boxes.conf.cpu().numpy())  # Độ tin cậy
+            labels.extend(result.boxes.cls.cpu().numpy())  # Lớp của đối tượng
+        
+        print(labels)
 
         # Áp dụng NMS để loại bỏ các box trùng
-        if len(boxes) > 0:
-            boxes = torch.tensor(boxes, device=self.device)
-            confidences = torch.tensor(confidences, device=self.device)
-            keep = nms(boxes, confidences, self.iou_thresh)
-            boxes = boxes[keep].cpu()
-            confidences = confidences[keep].cpu()
+        boxes = np.array(boxes)
+        confidences = np.array(confidences)
+        labels = np.array(labels)
 
-            # Scale boxes về kích thước ảnh gốc
-            h, w = img_shape
-            scale_w, scale_h = w / self.img_size, h / self.img_size
-            final_boxes = []
-            for box, conf in zip(boxes, confidences):
-                x1, y1, x2, y2 = box
-                x1 = int(x1 * scale_w)
-                y1 = int(y1 * scale_h)
-                x2 = int(x2 * scale_w)
-                y2 = int(y2 * scale_h)
-                final_boxes.append([x1, y1, x2, y2, float(conf)])
+        # Chuyển bounding boxes về kích thước ảnh gốc
+        h, w = img_shape
+        scale_w, scale_h = w / self.img_size, h / self.img_size
+        boxes[:, [0, 2]] *= scale_w
+        boxes[:, [1, 3]] *= scale_h
 
-            return torch.tensor(final_boxes, device=self.device)
-        return torch.tensor([]).to(self.device)
+        # Lọc theo độ tin cậy
+        mask = confidences > self.conf_thresh
+        boxes = boxes[mask]
+        confidences = confidences[mask]
+        labels = labels[mask]
+
+        # Đưa kết quả về dạng [x1, y1, x2, y2, conf]
+        results = []
+        for box, conf, label in zip(boxes, confidences, labels):
+            results.append([int(box[0]), int(box[1]), int(box[2]), int(box[3]), float(conf)])
+
+        return results
 
     def predict(self, img):
         """
@@ -90,10 +92,12 @@ class YoloV10Detector:
         """
         img_tensor = self.preprocess(img)
         with torch.no_grad():
-            preds = self.model(img_tensor)  # Dự đoán
-        print(preds)
-        results = self.postprocess(preds, img.shape[:2])
-        return results
+            # Dự đoán và nhận kết quả
+            results = self.model(img_tensor)
+        
+        # Lọc kết quả và post-process
+        final_results = self.postprocess(results, img.shape[:2])
+        return final_results
 
 
 def load_image(image_path):

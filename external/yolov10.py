@@ -108,7 +108,7 @@ class YoloV10Detector:
         with torch.no_grad():
             preds = self.model(img_tensor)  # Dự đoán
         
-        print(len(preds))
+        print(preds)
         results = self.postprocess(preds, img.shape[:2])
         return results
 
