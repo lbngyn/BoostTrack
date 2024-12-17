@@ -3,39 +3,39 @@ import numpy as np
 import cv2
 from torchvision.ops import nms
 
+import torch
+from ultralytics import YOLO
+
 class YoloV10Detector:
     def __init__(self, model_path, img_size=640, conf_thresh=0.3, iou_thresh=0.45, device=None):
         """
         Khởi tạo YOLOv10n Detector.
-        :param model_path: Đường dẫn đến file model YOLOv10n (.pt).
-        :param img_size: Kích thước ảnh đầu vào.
-        :param conf_thresh: Ngưỡng tin cậy cho detection.
-        :param iou_thresh: Ngưỡng NMS (non-maximum suppression).
-        :param device: CPU hoặc GPU.
         """
         self.img_size = img_size
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
-        self.device = device if device else (torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-        
-        # Load model YOLOv10n
+        self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        # Load YOLOv10n model
         print("Loading YOLOv10n model from:", model_path)
-        self.model = torch.load(model_path, map_location=self.device)
-        self.model.eval()
+        self.model = YOLO(model_path)  # Sử dụng YOLO từ Ultralytics
+        self.model.to(self.device)
         print("Model loaded successfully.")
 
-    def preprocess(self, img):
+    def predict(self, image):
         """
-        Tiền xử lý ảnh đầu vào.
-        :param img: Ảnh numpy (H x W x C).
-        :return: Tensor ảnh đã xử lý.
+        Dự đoán các bounding boxes cho hình ảnh đầu vào.
         """
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img_resized = cv2.resize(img, (self.img_size, self.img_size))
-        img_resized = img_resized / 255.0  # Chuẩn hóa
-        img_resized = np.transpose(img_resized, (2, 0, 1))  # HWC -> CHW
-        img_tensor = torch.tensor(img_resized, dtype=torch.float).unsqueeze(0).to(self.device)
-        return img_tensor
+        print("Running inference...")
+        results = self.model.predict(
+            source=image,
+            imgsz=self.img_size,
+            conf=self.conf_thresh,
+            iou=self.iou_thresh,
+            device=self.device,
+            verbose=False
+        )
+        return results[0]  # Trả về kết quả đầu tiên
 
     def postprocess(self, preds, img_shape):
         """
