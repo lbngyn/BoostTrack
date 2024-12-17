@@ -96,7 +96,7 @@ def main():
             results[video_name] = []
 
         img = img.cuda()
-        visulize(img)
+        print(img)
 
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
