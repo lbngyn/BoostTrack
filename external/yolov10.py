@@ -30,7 +30,7 @@ class YoloV10Detector:
         if torch.is_tensor(img):
             if img.ndim == 4:  # Loại bỏ batch dimension
                 img = img.squeeze(0)
-            img = img.permute(1, 2, 0).cpu().numpy()  # Chuyển sang HWC (Height-Width-Channel)
+            img = img.cpu().numpy()  # Chuyển sang HWC (Height-Width-Channel)
 
         print(img.shape)
         print(self.img_size)
@@ -41,7 +41,7 @@ class YoloV10Detector:
         # Kiểm tra nếu img_size là một tuple (height, width)
         if isinstance(self.img_size, tuple) and len(self.img_size) == 2:
             # Resize ảnh về kích thước model yêu cầu (width, height)
-            img_resized = cv2.resize(img, (self.img_size[1], self.img_size[0]))  # (width,height)
+            img_resized = cv2.resize(img, (self.img_size[0], self.img_size[1]))  # (width,height)
         else:
             raise ValueError(f"Expected img_size to be a tuple (height, width), got {self.img_size}")
 
