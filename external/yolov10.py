@@ -62,6 +62,8 @@ class YoloV10Detector:
 
         # Chuyển ảnh sang định dạng [C, H, W] và normalize
         img_resized = img_resized[:, :, ::-1]  # BGR to RGB
+        img_resized = img_resized.copy()
+
         img_tensor = torch.from_numpy(img_resized).permute(2, 0, 1).float() / 255.0  # Normalize [0,1]
         img_tensor = img_tensor.unsqueeze(0)  # Thêm batch dimension [1, C, H, W]
         img_tensor = img_tensor.to(self.device)
