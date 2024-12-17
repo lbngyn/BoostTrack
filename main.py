@@ -98,7 +98,7 @@ def main():
 
         # img = img.cuda()
         img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
-        print(img_path)
+        # print(img_path)
         img = cv2.imread(img_path)
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
@@ -111,9 +111,9 @@ def main():
 
         # Sử dụng YOLOv10x để dự đoán
         pred = det.predict(img)
-        print("Predict Value:", pred) 
-        print("Predict type:", type(pred)) 
-        print(len(pred)) 
+        # print("Predict Value:", pred) 
+        # print("Predict type:", type(pred)) 
+        # print(len(pred)) 
         pred = torch.tensor(pred)
 
         start_time = time.time()

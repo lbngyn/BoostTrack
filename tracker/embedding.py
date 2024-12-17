@@ -128,13 +128,9 @@ class EmbeddingComputer:
 
             crops = []
             for p in results:
-                if p[0] == w:  p[0] = w-1.0
-                if p[1] == h:  p[1] = h-1.0
+                if p[0] == w:  p[0] = w-1.0; print('eror') 
+                if p[1] == h:  p[1] = h-1.0; print('eror')
                 crop = img[p[1] : p[3], p[0] : p[2]]
-                print(p)
-                print(img.shape)
-                # print(f"Bounding box: {bbox}")
-                print(f"Crop shape: {crop.shape}")
 
                 crop = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
                 crop = cv2.resize(crop, self.crop_size, interpolation=cv2.INTER_LINEAR).astype(np.float32)

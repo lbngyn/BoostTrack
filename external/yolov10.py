@@ -32,8 +32,8 @@ class YoloV10Detector:
                 img = img.squeeze(0)
             img = img.cpu().numpy()  # Chuyển sang HWC (Height-Width-Channel)
 
-        print(img.shape)
-        print(self.img_size)
+        # print(img.shape)
+        # print(self.img_size)
         # Kiểm tra lại kiểu dữ liệu
         
         img_resized = cv2.resize(img, (self.img_size[1], self.img_size[0]))  # Resize về kích thước yêu cầu
@@ -70,7 +70,7 @@ class YoloV10Detector:
         labels = np.array(labels)
 
         # Chuyển bounding boxes về kích thước ảnh gốc
-        print(img_shape) 
+        # print(img_shape) 
         h, w = img_shape
         scale_w, scale_h = float(w / self.img_size[1]), float(h / self.img_size[0])
         boxes[:, [0, 2]] *= scale_w
