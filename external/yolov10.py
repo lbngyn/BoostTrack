@@ -77,8 +77,8 @@ class YoloV10Detector:
         boxes[:, [1, 3]] *= scale_h
 
         # Chuyển đổi từ [x_center, y_center, w, h] sang [xmin, ymin, xmax, ymax]
-        boxes[:, 0] -= boxes[:, 2] / 2.0  # xmin
-        boxes[:, 1] -= boxes[:, 3] / 2.0  # ymin
+        # boxes[:, 0] -= boxes[:, 2]  # xmin
+        # boxes[:, 1] -= boxes[:, 3] # ymin
         boxes[:, 2] += boxes[:, 0]  # xmax = xmin + w
         boxes[:, 3] += boxes[:, 1]  # ymax = ymin + h
 
