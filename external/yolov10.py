@@ -36,7 +36,7 @@ class YoloV10Detector:
         print(self.img_size)
         # Kiểm tra lại kiểu dữ liệu
         
-        img_resized = cv2.resize(img, (self.img_size[0], self.img_size[1]))  # Resize về kích thước yêu cầu
+        img_resized = cv2.resize(img, (self.img_size[1], self.img_size[0]))  # Resize về kích thước yêu cầu
 
         # Chuyển ảnh sang định dạng [C, H, W] và normalize
         img_resized = img_resized[:, :, ::-1]  # BGR to RGB
@@ -73,8 +73,8 @@ class YoloV10Detector:
 
         # Chuyển bounding boxes về kích thước ảnh gốc
         print(img_shape) 
-        w, h = img_shape
-        scale_w, scale_h = w / self.img_size[0], h / self.img_size[1]
+        h, w = img_shape
+        scale_w, scale_h = w / self.img_size[1], h / self.img_size[0]
         boxes[:, [0, 2]] *= scale_w
         boxes[:, [1, 3]] *= scale_h
 

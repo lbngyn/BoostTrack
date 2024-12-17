@@ -118,7 +118,8 @@ class EmbeddingComputer:
         crops = []
         if self.grid_off:
             # Basic embeddings
-            w, h = img.shape[:2]
+            h, w = img.shape[:2]
+            print(w,h)
             results = np.round(bbox).astype(np.int32)
             results[:, 0] = results[:, 0].clip(0, w)
             results[:, 1] = results[:, 1].clip(0, h)
