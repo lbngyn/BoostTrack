@@ -23,8 +23,8 @@ def display_results(img, results):
     :param results: Dự đoán bounding boxes [(x1, y1, x2, y2, conf)].
     """
     for box in results:
-        x1, y1, x2, y2, conf = box
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        x1, y1, w, h, conf = box
+        cv2.rectangle(img, (x1, y1), (x1+w, y1+h), (0, 255, 0), 2)
         cv2.putText(img, f'{conf:.2f}', (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     
     # Chuyển đổi BGR sang RGB để sử dụng với matplotlib
