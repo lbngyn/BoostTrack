@@ -126,7 +126,7 @@ def display_results(img, results):
 
 if __name__ == "__main__":
     model_path = '/kaggle/input/yolov10n-checkpoint/other/default/1/yolov10n.pt'  # Thay bằng đường dẫn đến model YOLOv10n của bạn
-    image_path = '/kaggle/input/mot20-converted-coco/MOT20/train/MOT20-01/img1/000001.jpg'  # Thay bằng đường dẫn đến ảnh bạn muốn kiểm tra
+    image_path = '/kaggle/input/mot17-converted-coco/MOT17/train/MOT17-02-DPM/img1/000001.jpg'  # Thay bằng đường dẫn đến ảnh bạn muốn kiểm tra
 
     # Tạo đối tượng detector
     detector = YoloV10Detector(model_path=model_path)
