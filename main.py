@@ -1,7 +1,7 @@
 import os
 import shutil
 import time
-
+import cv2
 import dataset
 import utils
 from args import make_parser
@@ -13,6 +13,7 @@ from tracker.boost_track import BoostTrack
 # Import YOLOv10 detector class (giả sử bạn đã tạo module này)
 from external.yolov10 import YoloV10Detector  # Module detector mới của bạn
 import matplotlib.pyplot as plt
+import torch
 
 
 
