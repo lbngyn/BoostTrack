@@ -79,7 +79,8 @@ def main():
     det = YoloV10Detector(model_path=detector_path, img_size=size)
     
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
-
+    
+    tracker = None
     results = {}
     frame_count = 0
     total_time = 0
