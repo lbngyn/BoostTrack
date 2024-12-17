@@ -7,15 +7,15 @@ from ultralytics import YOLO
 class YoloV10Detector:
     def __init__(self, model_path, img_size=640, conf_thresh=0.3, iou_thresh=0.45, device=None):
         """
-        Khởi tạo YOLOv10n Detector.
+        Khởi tạo YOLOv10 Detector.
         """
         self.img_size = img_size
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
         self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        # Load YOLOv10n model
-        print("Loading YOLOv10n model from:", model_path)
+        # Load YOLOv10 model
+        print("Loading YOLOv10x model from:", model_path)
         self.model = YOLO(model_path)  # Sử dụng YOLO từ Ultralytics
         self.model.to(self.device)
         print("Model loaded successfully.")
@@ -26,15 +26,27 @@ class YoloV10Detector:
         :param img: Ảnh numpy (H x W x C).
         :return: Tensor ảnh đã chuẩn hóa.
         """
-        if not isinstance(img, np.ndarray):
-            raise TypeError(f"Input img must be a numpy array, got {type(img)}")
+        # Nếu img là Tensor PyTorch
+        if torch.is_tensor(img):
+            if img.ndim == 4:  # Loại bỏ batch dimension
+                img = img.squeeze(0)
+            img = img.permute(1, 2, 0).cpu().numpy()  # Chuyển sang HWC (Height-Width-Channel)
 
-        # Resize ảnh
-        img_resized = cv2.resize(img, (self.img_size, self.img_size))  # Resize về kích thước yêu cầu
+        # Kiểm tra lại kiểu dữ liệu
+        if not isinstance(img, np.ndarray):
+            raise TypeError(f"Input img must be a numpy array after preprocessing, got {type(img)}")
+        
+        # Kiểm tra nếu img_size là một tuple (height, width)
+        if isinstance(self.img_size, tuple) and len(self.img_size) == 2:
+            # Resize ảnh về kích thước model yêu cầu (width, height)
+            img_resized = cv2.resize(img, (self.img_size[1], self.img_size[0]))  # (width, height)
+        else:
+            raise ValueError(f"Expected img_size to be a tuple (height, width), got {self.img_size}")
+
+        # Chuyển ảnh sang định dạng [C, H, W] và normalize
         img_resized = img_resized[:, :, ::-1]  # BGR to RGB
         img_resized = img_resized.copy()
 
-        # Chuyển ảnh sang tensor
         img_tensor = torch.from_numpy(img_resized).permute(2, 0, 1).float() / 255.0  # Normalize [0,1]
         img_tensor = img_tensor.unsqueeze(0)  # Thêm batch dimension [1, C, H, W]
         img_tensor = img_tensor.to(self.device)
