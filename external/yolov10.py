@@ -69,6 +69,9 @@ class YoloV10Detector:
         confidences = np.array(confidences)
         labels = np.array(labels)
 
+        if boxes.size == 0:  # Kiểm tra nếu boxes rỗng
+            return []
+
         # Chuyển bounding boxes về kích thước ảnh gốc
         # print(img_shape)
 
