@@ -59,7 +59,7 @@ def main():
     detector_path, size = get_detector_path_and_im_size(args)
     detector_path = '/kaggle/input/yolov10n-checkpoint/other/default/1/yolov10n.pt'
     # Thay thế YOLOX bằng YOLOv10n
-    det = YoloV10nDetector(model_path=detector_path, img_size=size)
+    det = YoloV10Detector(model_path=detector_path, img_size=size)
     
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
 
