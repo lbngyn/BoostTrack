@@ -33,7 +33,11 @@ def display_results(img, results):
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     plt.imshow(img_rgb)
     plt.axis('off')  # Tắt trục
+    # %matplotlib inline
     plt.show()
+    output_path = '/kaggle/working/result.jpg'
+    cv2.imwrite(output_path, img)
+    print(f"Image saved to {output_path}")
 
 if __name__ == "__main__":
     model_path = '/kaggle/input/yolov10x/other/default/1/yolov10x.pt'  # Thay bằng đường dẫn đến model YOLOv10n của bạn
