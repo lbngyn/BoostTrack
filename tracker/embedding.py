@@ -128,17 +128,18 @@ class EmbeddingComputer:
 
             crops = []
             for p in results:
+                if p[0] == w:  p[0] = w-1.0
+                if p[1] == h:  p[1] = h-1.0
                 crop = img[p[1] : p[3], p[0] : p[2]]
                 print(p)
                 print(img.shape)
-                print(crop)
                 # print(f"Bounding box: {bbox}")
                 print(f"Crop shape: {crop.shape}")
 
                 crop = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
                 crop = cv2.resize(crop, self.crop_size, interpolation=cv2.INTER_LINEAR).astype(np.float32)
                 if self.normalize:
-                    crop /= 255
+                    crop /= 255.0
                     crop -= np.array((0.485, 0.456, 0.406))
                     crop /= np.array((0.229, 0.224, 0.225))
                 crop = torch.as_tensor(crop.transpose(2, 0, 1))

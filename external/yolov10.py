@@ -64,8 +64,6 @@ class YoloV10Detector:
             confidences.extend(result.boxes.conf.cpu().numpy())  # Độ tin cậy
             labels.extend(result.boxes.cls.cpu().numpy())  # Lớp của đối tượng
         
-        print(labels)
-
         # Áp dụng NMS để loại bỏ các box trùng
         boxes = np.array(boxes)
         confidences = np.array(confidences)
@@ -74,13 +72,13 @@ class YoloV10Detector:
         # Chuyển bounding boxes về kích thước ảnh gốc
         print(img_shape) 
         h, w = img_shape
-        scale_w, scale_h = w / self.img_size[1], h / self.img_size[0]
+        scale_w, scale_h = float(w / self.img_size[1]), float(h / self.img_size[0])
         boxes[:, [0, 2]] *= scale_w
         boxes[:, [1, 3]] *= scale_h
 
         # Chuyển đổi từ [x_center, y_center, w, h] sang [xmin, ymin, xmax, ymax]
-        boxes[:, 0] -= boxes[:, 2] / 2  # xmin
-        boxes[:, 1] -= boxes[:, 3] / 2  # ymin
+        boxes[:, 0] -= boxes[:, 2] / 2.0  # xmin
+        boxes[:, 1] -= boxes[:, 3] / 2.0  # ymin
         boxes[:, 2] += boxes[:, 0]  # xmax = xmin + w
         boxes[:, 3] += boxes[:, 1]  # ymax = ymin + h
 

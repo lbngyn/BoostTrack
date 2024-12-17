@@ -100,7 +100,6 @@ def main():
         img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
         print(img_path)
         img = cv2.imread(img_path)
-        print(img.shape)
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
         if frame_id == 1:
