@@ -78,7 +78,7 @@ class YoloV10Detector:
 
         # Chuyển bounding boxes về kích thước ảnh gốc
         h, w = img_shape
-        scale_w, scale_h = w / self.img_size, h / self.img_size
+        scale_w, scale_h = w / self.img_size[1], h / self.img_size[0]
         boxes[:, [0, 2]] *= scale_w
         boxes[:, [1, 3]] *= scale_h
 
