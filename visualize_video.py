@@ -75,6 +75,6 @@ def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/ot
     print(f"Output saved to: {output_path}")
 
 # Example usage
-input_video = "/kaggle/input/mot17-videos/MOT17-01-FRCNN-raw.mp4"
-output_video = "/kaggle/working/MOT17-01-FRCNN-raw.mp4"
+input_video = "/kaggle/input/mot17-videos/MOT17-02-FRCNN-raw.mp4"
+output_video = "/kaggle/working/MOT17-02-FRCNN-raw.mp4"
 process_video(input_video, output_video)

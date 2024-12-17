@@ -100,6 +100,10 @@ def main():
         img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
         # print(img_path)
         img = cv2.imread(img_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_tensor = torch.from_numpy(img).permute(2, 0, 1).unsqueeze(0).float()  # (1, C, H, W)
+        img_tensor = img_tensor.to(next(det.model.parameters()).device)  # Move data to the same device as the model
+
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
         if frame_id == 1:
@@ -119,7 +123,7 @@ def main():
             continue
 
         # Update tracker
-        targets = tracker.update(pred, img_real, img, tag)
+        targets = tracker.update(pred, img_tensor, img, tag)
         tlwhs, ids, confs = utils.filter_targets(targets, GeneralSettings['aspect_ratio_thresh'], GeneralSettings['min_box_area'])
 
         total_time += time.time() - start_time
