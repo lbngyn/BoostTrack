@@ -12,6 +12,8 @@ from tracker.boost_track import BoostTrack
 
 # Import YOLOv10n detector class (giả sử bạn đã tạo module này)
 from external.yolov10 import YoloV10Detector  # Module detector mới của bạn
+import matplotlib.pyplot as plt
+
 
 
 def get_main_args():
@@ -40,6 +42,20 @@ def get_main_args():
     if args.test_dataset:
         args.result_folder.replace("-val", "-test")
     return args
+
+def visulize(img): 
+
+    # Chuyển đổi tensor thành numpy array
+    img_numpy = img.cpu().numpy()
+
+    # Nếu ảnh là 4D tensor (batch dimension), lấy ra ảnh đầu tiên
+    if img_numpy.ndim == 4:
+        img_numpy = img_numpy[0]
+
+    # Hiển thị ảnh
+    plt.imshow(img_numpy.transpose(1, 2, 0))  # Chuyển đổi CxHxW -> HxWxC cho matplotlib
+    plt.show()
+
 
 
 def main():
@@ -80,6 +96,7 @@ def main():
             results[video_name] = []
 
         img = img.cuda()
+        visulize(img)
 
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
