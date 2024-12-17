@@ -80,12 +80,11 @@ def main():
     
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
 
-    tracker = None
     results = {}
     frame_count = 0
     total_time = 0
 
-    for (img, np_img), label, info, idx in loader:
+    for (img_real, np_img), label, info, idx in loader:
         frame_id = info[2].item()
         video_name = info[4][0].split("/")[0]
 
@@ -115,6 +114,7 @@ def main():
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
+        pred = pred.torch.tensor()
 
         start_time = time.time()
 
@@ -122,7 +122,7 @@ def main():
             continue
 
         # Update tracker
-        targets = tracker.update(pred, img, np_img[0].numpy(), tag)
+        targets = tracker.update(pred, img_real, img, tag)
         tlwhs, ids, confs = utils.filter_targets(targets, GeneralSettings['aspect_ratio_thresh'], GeneralSettings['min_box_area'])
 
         total_time += time.time() - start_time
