@@ -32,6 +32,7 @@ class YoloV10Detector:
         # Resize ảnh
         img_resized = cv2.resize(img, (self.img_size, self.img_size))  # Resize về kích thước yêu cầu
         img_resized = img_resized[:, :, ::-1]  # BGR to RGB
+        img_resized = img_resized.copy()
 
         # Chuyển ảnh sang tensor
         img_tensor = torch.from_numpy(img_resized).permute(2, 0, 1).float() / 255.0  # Normalize [0,1]
