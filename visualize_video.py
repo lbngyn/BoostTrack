@@ -45,8 +45,9 @@ def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/ot
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_rgb_tensor = torch.from_numpy(frame_rgb).permute(2, 0, 1).unsqueeze(0).float()  # (1, C, H, W)
         frame_rgb_tensor = frame_rgb_tensor.to(next(det.model.parameters()).device)  # Move data to the same device as the model
-
-        # Object detection using YOLOv10x
+        print(frame_rgb_tensor.shape) 
+        print(frame_rgb.shape) 
+        # Object detection using YOLOv10x   
         pred = det.predict(frame_rgb)
         pred = torch.tensor(pred)
 
@@ -55,7 +56,7 @@ def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/ot
             continue
 
         # Update tracker with detection results
-        targets = tracker.update(pred, frame_rgb, frame_rgb, tag=f"frame_{frame_count}")
+        targets = tracker.update(pred, frame_rgb_tensor, frame_rgb, tag=f"frame_{frame_count}")
 
         # Filter and draw bounding boxes
         tlwhs, ids, confs = utils.filter_targets(targets, 1.6, 10)  # Example thresholds
