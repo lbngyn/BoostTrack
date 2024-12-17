@@ -1,7 +1,4 @@
 import cv2
-import time
-import os
-from external.adaptors import detector
 from tracker.boost_track import BoostTrack
 import utils
 from default_settings import GeneralSettings, get_detector_path_and_im_size
@@ -18,7 +15,7 @@ def preprocess_image(image, input_size):
 
 def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/other/default/1/yolov10x.pt", detector_model="yolov10x", dataset="mot17"):
     # Initialize YOLOv10x detector
-    detector_path, size = get_detector_path_and_im_size({"dataset": dataset})
+    size = (800, 1440)
     det = YoloV10Detector(model_path=model_path, img_size=size)
     print(next(det.model.parameters()).device)  # Access the device of the first model parameter
 
