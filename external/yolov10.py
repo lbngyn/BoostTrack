@@ -37,6 +37,22 @@ class YoloV10Detector:
         )
         return results[0]  # Trả về kết quả đầu tiên
 
+    def preprocess(self, img):
+        """
+        Chuyển đổi ảnh numpy thành tensor phù hợp để model dự đoán.
+        :param img: Ảnh numpy (H x W x C).
+        :return: Tensor ảnh đã chuẩn hóa.
+        """
+        # Resize ảnh về kích thước model yêu cầu
+        img_resized = cv2.resize(img, (self.img_size, self.img_size))
+
+        # Chuyển ảnh sang định dạng [C, H, W] và normalize
+        img_resized = img_resized[:, :, ::-1]  # BGR to RGB
+        img_tensor = torch.from_numpy(img_resized).permute(2, 0, 1).float() / 255.0  # Normalize [0,1]
+        img_tensor = img_tensor.unsqueeze(0)  # Thêm batch dimension [1, C, H, W]
+        img_tensor = img_tensor.to(self.device)
+        return img_tensor
+
     def postprocess(self, preds, img_shape):
         """
         Xử lý kết quả dự đoán.
