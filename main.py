@@ -10,7 +10,7 @@ from external.adaptors import detector
 from tracker.GBI import GBInterpolation
 from tracker.boost_track import BoostTrack
 
-# Import YOLOv10n detector class (giả sử bạn đã tạo module này)
+# Import YOLOv10 detector class (giả sử bạn đã tạo module này)
 from external.yolov10 import YoloV10Detector  # Module detector mới của bạn
 import matplotlib.pyplot as plt
 
@@ -73,8 +73,8 @@ def main():
     BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
 
     detector_path, size = get_detector_path_and_im_size(args)
-    detector_path = '/kaggle/input/yolov10n-checkpoint/other/default/1/yolov10n.pt'
-    # Thay thế YOLOX bằng YOLOv10n
+    detector_path = '/kaggle/input/yolov10x/other/default/1/yolov10x.pt'
+    # Thay thế YOLOX bằng YOLOv10x
     det = YoloV10Detector(model_path=detector_path, img_size=size)
     
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
@@ -107,7 +107,7 @@ def main():
                 tracker.dump_cache()
             tracker = BoostTrack(video_name=video_name)
 
-        # Sử dụng YOLOv10n để dự đoán
+        # Sử dụng YOLOv10x để dự đoán
         pred = det.predict(img)
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 

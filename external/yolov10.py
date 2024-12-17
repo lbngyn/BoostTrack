@@ -7,15 +7,15 @@ from ultralytics import YOLO
 class YoloV10Detector:
     def __init__(self, model_path, img_size=640, conf_thresh=0.3, iou_thresh=0.45, device=None):
         """
-        Khởi tạo YOLOv10n Detector.
+        Khởi tạo YOLOv10 Detector.
         """
         self.img_size = img_size
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
         self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        # Load YOLOv10n model
-        print("Loading YOLOv10n model from:", model_path)
+        # Load YOLOv10 model
+        print("Loading YOLOv10x model from:", model_path)
         self.model = YOLO(model_path)  # Sử dụng YOLO từ Ultralytics
         self.model.to(self.device)
         print("Model loaded successfully.")
