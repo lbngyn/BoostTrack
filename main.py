@@ -112,7 +112,6 @@ def main():
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
-        print(len(pred[0]))
 
         start_time = time.time()
 
