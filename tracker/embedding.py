@@ -129,6 +129,8 @@ class EmbeddingComputer:
             for p in results:
                 crop = img[p[1] : p[3], p[0] : p[2]]
                 print(p)
+                print(img.shape)
+                print(crop)
                 # print(f"Bounding box: {bbox}")
                 print(f"Crop shape: {crop.shape}")
 
