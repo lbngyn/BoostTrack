@@ -5,7 +5,7 @@ from torchvision.ops import nms
 from ultralytics import YOLO
 
 class YoloV10Detector:
-    def __init__(self, model_path, img_size=(800,1440), conf_thresh=0.0, iou_thresh=0.0, device=None):
+    def __init__(self, model_path, img_size=(880,1440), conf_thresh=0.0, iou_thresh=0.0, device=None):
         """
         Khởi tạo YOLOv10 Detector.
         """
@@ -70,17 +70,22 @@ class YoloV10Detector:
         labels = np.array(labels)
 
         # Chuyển bounding boxes về kích thước ảnh gốc
-        # print(img_shape) 
-        h, w = img_shape
-        scale_w, scale_h = float(w / self.img_size[1]), float(h / self.img_size[0])
-        boxes[:, [0, 2]] *= scale_w
-        boxes[:, [1, 3]] *= scale_h
+        # print(img_shape)
 
-        # Chuyển đổi từ [x_center, y_center, w, h] sang [xmin, ymin, xmax, ymax]
-        # boxes[:, 0] -= boxes[:, 2]  # xmin
-        # boxes[:, 1] -= boxes[:, 3] # ymin
-        boxes[:, 2] += boxes[:, 0]  # xmax = xmin + w
-        boxes[:, 3] += boxes[:, 1]  # ymax = ymin + h
+        h, w = img_shape
+        # Tính toán tỷ lệ scale DỰA TRÊN KÍCH THƯỚC BAN ĐẦU CỦA ẢNH, KHÔNG PHẢI img_size
+        scale_w = w / self.img_size[1] # Sửa lỗi ở đây
+        scale_h = h / self.img_size[0] # Sửa lỗi ở đây
+
+        # Scale boxes về kích thước ảnh gốc
+        boxes[:, [0, 2]] *= scale_w # x_center và width
+        boxes[:, [1, 3]] *= scale_h # y_center và height
+
+        # CHUYỂN ĐỔI từ [x_center, y_center, w, h] sang [xmin, ymin, xmax, ymax]
+        boxes[:, 0] = boxes[:, 0] - boxes[:, 2] / 2  # xmin
+        boxes[:, 1] = boxes[:, 1] - boxes[:, 3] / 2  # ymin
+        boxes[:, 2] = boxes[:, 0] + boxes[:, 2]      # xmax
+        boxes[:, 3] = boxes[:, 1] + boxes[:, 3]      # ymax
 
         # Đưa kết quả về dạng [xmin, ymin, xmax, ymax, conf]
         results = []
