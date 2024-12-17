@@ -52,13 +52,13 @@ class YoloV10Detector:
         Xử lý kết quả dự đoán.
         :param results: Kết quả từ model (raw output).
         :param img_shape: Kích thước ảnh gốc (H, W).
-        :return: Tensor các bounding boxes [(x1, y1, x2, y2, conf)].
+        :return: Tensor các bounding boxes [(xmin, ymin, xmax, ymax, conf)].
         """
         boxes = []
         confidences = []
         labels = []
 
-        # Giả sử preds đã là tensor [num_boxes, 6] (x1, y1, x2, y2, conf, class)
+        # Giả sử preds đã là tensor [num_boxes, 6] (x, y, w, h, conf, class)
         for result in results:
             boxes.extend(result.boxes.xywh.cpu().numpy())  # Tọa độ bounding box
             confidences.extend(result.boxes.conf.cpu().numpy())  # Độ tin cậy
@@ -77,18 +77,19 @@ class YoloV10Detector:
         boxes[:, [0, 2]] *= scale_w
         boxes[:, [1, 3]] *= scale_h
 
-        # Lọc theo độ tin cậy
-        mask = confidences > self.conf_thresh
-        boxes = boxes[mask]
-        confidences = confidences[mask]
-        labels = labels[mask]
+        # Chuyển đổi từ [x_center, y_center, w, h] sang [xmin, ymin, xmax, ymax]
+        boxes[:, 0] -= boxes[:, 2] / 2  # xmin
+        boxes[:, 1] -= boxes[:, 3] / 2  # ymin
+        boxes[:, 2] += boxes[:, 0]  # xmax = xmin + w
+        boxes[:, 3] += boxes[:, 1]  # ymax = ymin + h
 
-        # Đưa kết quả về dạng [x1, y1, x2, y2, conf]
+        # Đưa kết quả về dạng [xmin, ymin, xmax, ymax, conf]
         results = []
         for box, conf, label in zip(boxes, confidences, labels):
             results.append([int(box[0]), int(box[1]), int(box[2]), int(box[3]), float(conf)])
 
         return results
+
 
     def predict(self, img):
         """
