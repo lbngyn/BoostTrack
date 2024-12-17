@@ -52,7 +52,9 @@ class YoloV10Detector:
         # Kiểm tra lại kiểu dữ liệu
         if not isinstance(img, np.ndarray):
             raise TypeError(f"Input img must be a numpy array after preprocessing, got {type(img)}")
-        
+        # Kiểm tra self.img_size có phải là số nguyên không
+        if not isinstance(self.img_size, int):
+            raise ValueError(f"Expected img_size to be an integer, got {type(self.img_size)}")
         # Resize ảnh về kích thước model yêu cầu
         img_resized = cv2.resize(img, (self.img_size, self.img_size))
 
