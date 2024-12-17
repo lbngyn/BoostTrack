@@ -128,8 +128,8 @@ class EmbeddingComputer:
 
             crops = []
             for p in results:
-                if p[0] == w:  p[0] = w-1.0; print('eror') 
-                if p[1] == h:  p[1] = h-1.0; print('eror')
+                if p[0] == w:  p[0] = w-1.0
+                if p[1] == h:  p[1] = h-1.0
                 crop = img[p[1] : p[3], p[0] : p[2]]
 
                 crop = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)

@@ -5,7 +5,7 @@ from torchvision.ops import nms
 from ultralytics import YOLO
 
 class YoloV10Detector:
-    def __init__(self, model_path, img_size=640, conf_thresh=0.3, iou_thresh=0.45, device=None):
+    def __init__(self, model_path, img_size=640, conf_thresh=0.0, iou_thresh=0.0, device=None):
         """
         Khởi tạo YOLOv10 Detector.
         """
@@ -85,6 +85,7 @@ class YoloV10Detector:
         # Đưa kết quả về dạng [xmin, ymin, xmax, ymax, conf]
         results = []
         for box, conf, label in zip(boxes, confidences, labels):
+            if label != 0: continue
             results.append([float(box[0]), float(box[1]), float(box[2]), float(box[3]), float(conf)])
 
         return results

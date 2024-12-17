@@ -111,9 +111,6 @@ def main():
 
         # Sử dụng YOLOv10x để dự đoán
         pred = det.predict(img)
-        # print("Predict Value:", pred) 
-        # print("Predict type:", type(pred)) 
-        # print(len(pred)) 
         pred = torch.tensor(pred)
 
         start_time = time.time()
