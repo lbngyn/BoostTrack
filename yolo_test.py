@@ -50,7 +50,6 @@ class YoloV10Detector:
         boxes = []
         confidences = []
         labels = []
-        print(labels)
 
         # Giả sử preds đã là tensor [num_boxes, 6] (x1, y1, x2, y2, conf, class)
         for result in results:
