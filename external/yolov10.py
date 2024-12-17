@@ -43,6 +43,16 @@ class YoloV10Detector:
         :param img: Ảnh numpy (H x W x C).
         :return: Tensor ảnh đã chuẩn hóa.
         """
+        # Nếu img là Tensor PyTorch
+        if torch.is_tensor(img):
+            if img.ndim == 4:  # Loại bỏ batch dimension
+                img = img.squeeze(0)
+            img = img.permute(1, 2, 0).cpu().numpy()  # Chuyển sang HWC (Height-Width-Channel)
+
+        # Kiểm tra lại kiểu dữ liệu
+        if not isinstance(img, np.ndarray):
+            raise TypeError(f"Input img must be a numpy array after preprocessing, got {type(img)}")
+        
         # Resize ảnh về kích thước model yêu cầu
         img_resized = cv2.resize(img, (self.img_size, self.img_size))
 
