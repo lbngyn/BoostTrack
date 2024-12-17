@@ -6,7 +6,9 @@ from tracker.boost_track import BoostTrack
 import utils
 from default_settings import GeneralSettings, get_detector_path_and_im_size
 import torch
-import cv2
+
+# Assuming YoloV10Detector is imported in the external.yolov10 module
+from external.yolov10 import YoloV10Detector  # Import YOLOv10x detector
 
 def preprocess_image(image, input_size):
     h, w = input_size
@@ -14,10 +16,11 @@ def preprocess_image(image, input_size):
     image = image.astype('float32') / 255.0  # Normalize
     return torch.from_numpy(image).permute(2, 0, 1).unsqueeze(0)
 
-def process_video(video_path, output_path, model_path="external/weights/bytetrack_x_mot17.pth.tar", detector_model="yolox", dataset="mot17"):
-    # Initialize detector
-    det = detector.Detector(detector_model, model_path, dataset)
-    print(next(det.model.parameters()).device)  # Truy cập thiết bị của tham số đầu tiên trong mô hình
+def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/other/default/1/yolov10x.pt", detector_model="yolov10x", dataset="mot17"):
+    # Initialize YOLOv10x detector
+    detector_path, size = get_detector_path_and_im_size({"dataset": dataset})
+    det = YoloV10Detector(model_path=model_path, img_size=size)
+    print(next(det.model.parameters()).device)  # Access the device of the first model parameter
 
     # Initialize video reader and writer
     cap = cv2.VideoCapture(video_path)
@@ -43,17 +46,17 @@ def process_video(video_path, output_path, model_path="external/weights/bytetrac
 
         frame_count += 1
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        input_size = (800, 1440)           # Kích thước đầu vào yêu cầu bởi mô hình
+        input_size = (800, 1440)  # Input size required by the model
         preprocessed = preprocess_image(frame_rgb, input_size)
-        preprocessed = preprocessed.to(next(det.model.parameters()).device)  # Chuyển dữ liệu vào cùng thiết bị với mô hình
+        preprocessed = preprocessed.to(next(det.model.parameters()).device)  # Move data to the same device as the model
 
-        # Object detection
-        pred = det(preprocessed, tag=f"frame_{frame_count}")
+        # Object detection using YOLOv10x
+        pred = det.predict(frame_rgb)
         if pred is None:  # No detection
             out.write(frame)
             continue
 
-        # Update tracker
+        # Update tracker with detection results
         targets = tracker.update(pred, preprocessed, frame, tag=f"frame_{frame_count}")
 
         # Filter and draw bounding boxes
