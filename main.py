@@ -95,8 +95,9 @@ def main():
         if video_name not in results:
             results[video_name] = []
 
-        img = img.cuda()
-        print(img)
+        # img = img.cuda()
+        new_img = np_img[0].cuda()
+        visulize(new_img)
 
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
@@ -108,7 +109,7 @@ def main():
             tracker = BoostTrack(video_name=video_name)
 
         # Sử dụng YOLOv10x để dự đoán
-        pred = det.predict(img)
+        pred = det.predict(new_img)
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
