@@ -91,7 +91,7 @@ class YoloV10Detector:
         img_tensor = self.preprocess(img)
         with torch.no_grad():
             preds = self.model(img_tensor)  # Dự đoán
-        print(preds['boxes'])
+        print(preds)
         results = self.postprocess(preds, img.shape[:2])
         return results
 
