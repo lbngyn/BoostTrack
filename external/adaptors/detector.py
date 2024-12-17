@@ -41,7 +41,7 @@ class Detector(torch.nn.Module):
             return self.cache[tag]
         if self.model is None:
             self.initialize_model()
-
+        print("Not use cache!")
         with torch.no_grad():
         # Kiểm tra và chuyển đổi sang tensor nếu cần
             if not isinstance(batch, torch.Tensor):

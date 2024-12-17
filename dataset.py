@@ -7,11 +7,10 @@ import numpy as np
 from pycocotools.coco import COCO
 from torchvision import transforms
 from yolox.data import ValTransform
-
-def get_mot_loader(dataset, test, data_dir="/kaggle/input", workers=4, size=(800, 1440)):
-    data_folder = os.listdir(data_dir) 
-    print(data_folder)
-    data_dir = os.path.join(data_dir, data_folder[0])
+def get_mot_loader(dataset, test, data_dir="/kaggle/input/mot20-converted-coco", workers=4, size=(800, 1440)):
+    # data_folder = os.listdir(data_dir) 
+    # print(data_folder)
+    # data_dir = os.path.join(data_dir, data_folder[0])
     # Different dataset paths
     if dataset == "mot17":
         direc = "MOT17"
