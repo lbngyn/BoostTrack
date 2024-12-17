@@ -1,7 +1,6 @@
 import os
 import shutil
 import time
-import cv2
 
 import dataset
 import utils
@@ -99,6 +98,11 @@ def main():
         # img = img.cuda()
         img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
         img = cv2.imread(img_path)
+        # Convert the numpy array to a PyTorch tensor
+        img_tensor = torch.tensor(img).float()
+
+        # Move the tensor to GPU (if CUDA is available)
+        img = img_tensor.cuda()
         img = img.cuda()
         print(img)
         # Initialize tracker on first frame of a new video
