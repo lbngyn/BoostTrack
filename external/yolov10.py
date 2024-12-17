@@ -100,6 +100,9 @@ class YoloV10Detector:
         :param img: Ảnh numpy (H x W x C).
         :return: Danh sách bounding boxes [(x1, y1, x2, y2, conf)].
         """
+        print(f"Type of img: {type(img)}")
+        print(f"Shape of img: {getattr(img, 'shape', 'Not available')}")
+
         img_tensor = self.preprocess(img)
         with torch.no_grad():
             preds = self.model(img_tensor)  # Dự đoán
