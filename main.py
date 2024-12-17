@@ -10,10 +10,8 @@ from external.adaptors import detector
 from tracker.GBI import GBInterpolation
 from tracker.boost_track import BoostTrack
 
-"""
-Script modified from Deep OC-SORT: 
-https://github.com/GerardMaggiolino/Deep-OC-SORT
-"""
+# Import YOLOv10n detector class (giả sử bạn đã tạo module này)
+from external.yolov10 import YoloV10Detector  # Module detector mới của bạn
 
 
 def get_main_args():
@@ -29,13 +27,9 @@ def get_main_args():
 
     parser.add_argument("--btpp_arg_iou_boost", action="store_true", help="BoostTrack++ arg. Mark if only IoU should be used for detection confidence boost.")
     parser.add_argument("--btpp_arg_no_sb", action="store_true", help="BoostTrack++ arg. Mark if soft detection confidence boost should NOT be used.")
-    parser.add_argument("--btpp_arg_no_vt", action="store_true", help="BoostTrack++ arg. Mark if varying threhold should NOT be used for the detection confidence boost.")
+    parser.add_argument("--btpp_arg_no_vt", action="store_true", help="BoostTrack++ arg. Mark if varying threshold should NOT be used for the detection confidence boost.")
 
-    parser.add_argument(
-        "--no_post",
-        action="store_true",
-        help="do not run post-processing.",
-    )
+    parser.add_argument("--no_post", action="store_true", help="do not run post-processing.")
 
     args = parser.parse_args()
     if args.dataset == "mot17":
@@ -63,22 +57,24 @@ def main():
     BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
 
     detector_path, size = get_detector_path_and_im_size(args)
-    det = detector.Detector("yolox", detector_path, args.dataset)
+    detector_path = '/kaggle/input/yolov10n-checkpoint/other/default/1/yolov10n.pt'
+    # Thay thế YOLOX bằng YOLOv10n
+    det = YoloV10nDetector(model_path=detector_path, img_size=size)
+    
     loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
 
     tracker = None
     results = {}
     frame_count = 0
     total_time = 0
-    # See __getitem__ of dataset.MOTDataset
+
     for (img, np_img), label, info, idx in loader:
-        # Frame info
         frame_id = info[2].item()
         video_name = info[4][0].split("/")[0]
 
-        # Hacky way to skip SDP and DPM when testing
         if "FRCNN" not in video_name and args.dataset == "mot17":
             continue
+
         tag = f"{video_name}:{frame_id}"
         if video_name not in results:
             results[video_name] = []
@@ -92,19 +88,21 @@ def main():
             print(f"Time spent: {total_time:.3f}, FPS {frame_count / (total_time + 1e-9):.2f}")
             if tracker is not None:
                 tracker.dump_cache()
-
             tracker = BoostTrack(video_name=video_name)
 
-        pred = det(img, tag)
+        # Sử dụng YOLOv10n để dự đoán
+        pred = det.predict(img)
         print("Predict Value:", pred) 
         print("Predict type:", type(pred)) 
         print(len(pred)) 
         print(len(pred[0]))
+
         start_time = time.time()
 
         if pred is None:
             continue
-        # Nx5 of (x1, y1, x2, y2, ID)
+
+        # Update tracker
         targets = tracker.update(pred, img, np_img[0].numpy(), tag)
         tlwhs, ids, confs = utils.filter_targets(targets, GeneralSettings['aspect_ratio_thresh'], GeneralSettings['min_box_area'])
 
@@ -115,16 +113,19 @@ def main():
 
     print(f"Time spent: {total_time:.3f}, FPS {frame_count / (total_time + 1e-9):.2f}")
     print(total_time)
+
     # Save detector results
     det.dump_cache()
     tracker.dump_cache()
-    # Save for all sequences
+
     folder = os.path.join(args.result_folder, args.exp_name, "data")
     os.makedirs(folder, exist_ok=True)
     for name, res in results.items():
         result_filename = os.path.join(folder, f"{name}.txt")
         utils.write_results_no_score(result_filename, res)
+
     print(f"Finished, results saved to {folder}")
+
     if not args.no_post:
         post_folder = os.path.join(args.result_folder, args.exp_name + "_post")
         pre_folder = os.path.join(args.result_folder, args.exp_name)
@@ -133,9 +134,8 @@ def main():
             shutil.rmtree(post_folder)
         shutil.copytree(pre_folder, post_folder)
         post_folder_data = os.path.join(post_folder, "data")
-        interval = 1000  # i.e. no max interval
+        interval = 1000
         utils.dti(post_folder_data, post_folder_data, n_dti=interval, n_min=25)
-
         print(f"Linear interpolation post-processing applied, saved to {post_folder_data}.")
 
         res_folder = os.path.join(args.result_folder, args.exp_name, "data")
