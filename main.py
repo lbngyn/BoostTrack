@@ -105,7 +105,7 @@ def main():
         # Move the tensor to GPU (if CUDA is available)
         img = img_tensor.cuda()
         img = img.cuda()
-        print(img)
+        print(img.shape)
         # Initialize tracker on first frame of a new video
         print(f"Processing {video_name}:{frame_id}\r", end="")
         if frame_id == 1:
