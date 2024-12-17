@@ -42,7 +42,6 @@ if __name__ == "__main__":
 
     # Load ảnh
     img = load_image(image_path)
-    print(img)
     print(img.shape)
 
     # Dự đoán
