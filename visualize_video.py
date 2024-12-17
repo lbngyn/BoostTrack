@@ -49,6 +49,8 @@ def process_video(video_path, output_path, model_path="/kaggle/input/yolov10x/ot
 
         # Object detection using YOLOv10x
         pred = det.predict(frame_rgb)
+        pred = torch.tensor(pred)
+
         if pred is None:  # No detection
             out.write(frame)
             continue
