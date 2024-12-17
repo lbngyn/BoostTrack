@@ -35,15 +35,8 @@ class YoloV10Detector:
         print(img.shape)
         print(self.img_size)
         # Kiểm tra lại kiểu dữ liệu
-        if not isinstance(img, np.ndarray):
-            raise TypeError(f"Input img must be a numpy array after preprocessing, got {type(img)}")
         
-        # Kiểm tra nếu img_size là một tuple (height, width)
-        if isinstance(self.img_size, tuple) and len(self.img_size) == 2:
-            # Resize ảnh về kích thước model yêu cầu (width, height)
-            img_resized = cv2.resize(img, (self.img_size[0], self.img_size[1]))  # (width,height)
-        else:
-            raise ValueError(f"Expected img_size to be a tuple (height, width), got {self.img_size}")
+        img_resized = cv2.resize(img, (self.img_size[0], self.img_size[1]))  # Resize về kích thước yêu cầu
 
         # Chuyển ảnh sang định dạng [C, H, W] và normalize
         img_resized = img_resized[:, :, ::-1]  # BGR to RGB
