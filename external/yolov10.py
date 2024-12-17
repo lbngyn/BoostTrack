@@ -87,7 +87,7 @@ class YoloV10Detector:
         # Đưa kết quả về dạng [xmin, ymin, xmax, ymax, conf]
         results = []
         for box, conf, label in zip(boxes, confidences, labels):
-            results.append([int(box[0]), int(box[1]), int(box[2]), int(box[3]), float(conf)])
+            results.append([float(box[0]), float(box[1]), float(box[2]), float(box[3]), float(conf)])
 
         return results
 
