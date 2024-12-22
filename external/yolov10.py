@@ -5,7 +5,7 @@ from torchvision.ops import nms
 from ultralytics import YOLO
 
 class YoloV10Detector:
-    def __init__(self, model_path, img_size=(800,1440), device=None):
+    def __init__(self, model_path, img_size=(1088,1088), device=None):
         """
         Khởi tạo YOLOv10 Detector.
         """

@@ -29,9 +29,6 @@ def process_video(video_path, output_path, model_path, det_classes, args):
     BoostTrackPlusPlusSettings.values['use_rich_s'] = not args.btpp_arg_iou_boost
     BoostTrackPlusPlusSettings.values['use_sb'] = not args.btpp_arg_no_sb
     BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
-    size = (800, 1440)
-    det = YoloV10Detector(model_path=model_path, img_size=size)
-    print(next(det.model.parameters()).device)
 
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -43,6 +40,8 @@ def process_video(video_path, output_path, model_path, det_classes, args):
     fps = cap.get(cv2.CAP_PROP_FPS)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    det = YoloV10Detector(model_path=model_path)
+    print(next(det.model.parameters()).device)
 
     tracker = BoostTrack(video_name="MOT_Pipeline")
     frame_count = 0
@@ -79,8 +78,8 @@ def process_video(video_path, output_path, model_path, det_classes, args):
             color = id_colors[track_id]
 
             cv2.rectangle(frame, (x1, y1), (x1 + w, y1 + h), color, 2)
-            label = f"ID: {int(track_id)}"
-            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            label = f"{int(track_id)}"
+            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 3)
 
         out.write(frame)
         print(f"Processed frame {frame_count}\r", end="")
