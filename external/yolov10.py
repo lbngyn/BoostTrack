@@ -5,13 +5,11 @@ from torchvision.ops import nms
 from ultralytics import YOLO
 
 class YoloV10Detector:
-    def __init__(self, model_path, img_size=(800,1440), conf_thresh=0.0, iou_thresh=0.0, device=None):
+    def __init__(self, model_path, img_size=(800,1440), device=None):
         """
         Khởi tạo YOLOv10 Detector.
         """
         self.img_size = img_size
-        self.conf_thresh = conf_thresh
-        self.iou_thresh = iou_thresh
         self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Load YOLOv10 model

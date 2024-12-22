@@ -67,7 +67,7 @@ def process_video(video_path, output_path, model_path, det_classes):
             color = id_colors[track_id]
 
             cv2.rectangle(frame, (x1, y1), (x1 + w, y1 + h), color, 2)
-            label = f"ID: {track_id} ({conf:.2f})"
+            label = f"ID: {int(track_id)}"
             cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
         out.write(frame)
