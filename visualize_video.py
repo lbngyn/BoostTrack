@@ -69,7 +69,7 @@ def process_video(video_path, output_path, model_path, det_classes, args):
             continue
 
         targets = tracker.update(pred, frame_rgb_tensor, frame_rgb, tag=f"frame_{frame_count}")
-        tlwhs, ids, confs = utils.filter_targets(targets, GeneralSettings.conf_thresh, GeneralSettings.min_box_area)
+        tlwhs, ids, confs = utils.filter_targets(targets, GeneralSettings['aspect_ratio_thresh'], GeneralSettings['min_box_area'])
         for tlwh, track_id, conf in zip(tlwhs, ids, confs):
             x1, y1, w, h = map(int, tlwh)
 
@@ -108,5 +108,4 @@ if __name__ == "__main__":
     parser.add_argument("--btpp_arg_no_vt", action="store_true", help="BoostTrack++ arg. Mark if varying threshold should NOT be used for the detection confidence boost.")
     parser.add_argument("--no_post", action="store_true", help="do not run post-processing.")
     args = parser.parse_args()
-    print(f"Conf after parsing: {args.conf}")  # Đảm bảo không bị ghi đè
     process_video(args.video, args.output, args.model, args.det_classes, args)
