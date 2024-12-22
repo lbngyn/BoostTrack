@@ -45,7 +45,6 @@ def process_video(video_path, output_path, model_path, det_classes):
         pred = det.predict(frame_rgb, det_classes)
         pred = torch.tensor(pred)
 
-        print(pred)
         if pred is None or len(pred) == 0:
             out.write(frame)
             continue
