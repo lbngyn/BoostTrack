@@ -5,12 +5,16 @@ import utils
 from default_settings import GeneralSettings, get_detector_path_and_im_size
 import torch
 from external.yolov10 import YoloV10Detector
+import random
 
 def preprocess_image(image, input_size):
     h, w = input_size
     image = cv2.resize(image, (w, h))
     image = image.astype('float32') / 255.0
     return torch.from_numpy(image).permute(2, 0, 1).unsqueeze(0)
+
+def generate_random_color():
+    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
 
 def process_video(video_path, output_path, model_path, det_classes):
     size = (800, 1440)
@@ -30,6 +34,9 @@ def process_video(video_path, output_path, model_path, det_classes):
 
     tracker = BoostTrack(video_name="MOT_Pipeline")
     frame_count = 0
+
+    # Dictionary to store colors for each track ID
+    id_colors = {}
 
     print("Starting MOT pipeline...")
     while cap.isOpened():
@@ -53,9 +60,15 @@ def process_video(video_path, output_path, model_path, det_classes):
         tlwhs, ids, confs = utils.filter_targets(targets, 1.6, 10)
         for tlwh, track_id, conf in zip(tlwhs, ids, confs):
             x1, y1, w, h = map(int, tlwh)
-            cv2.rectangle(frame, (x1, y1), (x1 + w, y1 + h), (0, 255, 0), 2)
+
+            # Assign a color to the track ID if not already assigned
+            if track_id not in id_colors:
+                id_colors[track_id] = generate_random_color()
+            color = id_colors[track_id]
+
+            cv2.rectangle(frame, (x1, y1), (x1 + w, y1 + h), color, 2)
             label = f"ID: {track_id} ({conf:.2f})"
-            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
         out.write(frame)
         print(f"Processed frame {frame_count}\r", end="")
