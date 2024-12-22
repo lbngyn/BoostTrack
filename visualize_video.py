@@ -91,7 +91,8 @@ def process_video(video_path, output_path, model_path, det_classes, args):
     print(f"Output saved to: {output_path}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Multi-Object Tracking Pipeline")
+
+    parser = make_parser()
     parser.add_argument("--video", type=str, default="/kaggle/input/mot17-videos/MOT17-02-FRCNN-raw.mp4", help="Path to input video")
     parser.add_argument("--output", type=str, default="/kaggle/working/MOT17-02-FRCNN-raw.mp4", help="Path to save output video")
     parser.add_argument("--model", type=str, default="/kaggle/input/yolov10x/other/default/1/yolov10x.pt", help="Path to YOLOv10x model")
