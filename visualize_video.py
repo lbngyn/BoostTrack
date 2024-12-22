@@ -45,7 +45,18 @@ def preprocess_image(image, input_size):
 def generate_random_color():
     return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
 
-def process_video(video_path, output_path, model_path, det_classes, arg):
+def process_video(video_path, output_path, model_path, det_classes):
+    args = get_main_args()
+    GeneralSettings.values['dataset'] = args.dataset
+    GeneralSettings.values['use_embedding'] = not args.no_reid
+    GeneralSettings.values['use_ecc'] = not args.no_cmc
+    GeneralSettings.values['test_dataset'] = args.test_dataset
+
+    BoostTrackSettings.values['s_sim_corr'] = args.s_sim_corr
+
+    BoostTrackPlusPlusSettings.values['use_rich_s'] = not args.btpp_arg_iou_boost
+    BoostTrackPlusPlusSettings.values['use_sb'] = not args.btpp_arg_no_sb
+    BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
     size = (800, 1440)
     det = YoloV10Detector(model_path=model_path, img_size=size)
     print(next(det.model.parameters()).device)
@@ -108,18 +119,6 @@ def process_video(video_path, output_path, model_path, det_classes, arg):
     print(f"Output saved to: {output_path}")
 
 if __name__ == "__main__":
-    args = get_main_args()
-    GeneralSettings.values['dataset'] = args.dataset
-    GeneralSettings.values['use_embedding'] = not args.no_reid
-    GeneralSettings.values['use_ecc'] = not args.no_cmc
-    GeneralSettings.values['test_dataset'] = args.test_dataset
-
-    BoostTrackSettings.values['s_sim_corr'] = args.s_sim_corr
-
-    BoostTrackPlusPlusSettings.values['use_rich_s'] = not args.btpp_arg_iou_boost
-    BoostTrackPlusPlusSettings.values['use_sb'] = not args.btpp_arg_no_sb
-    BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
-
     parser = argparse.ArgumentParser(description="Multi-Object Tracking Pipeline")
     parser.add_argument("--video", type=str, default="/kaggle/input/mot17-videos/MOT17-02-FRCNN-raw.mp4", help="Path to input video")
     parser.add_argument("--output", type=str, default="/kaggle/working/MOT17-02-FRCNN-raw.mp4", help="Path to save output video")
@@ -128,4 +127,4 @@ if __name__ == "__main__":
 
     args2 = parser.parse_args()
 
-    process_video(args2.video, args2.output, args2.model, args2.det_classes, args)
+    process_video(args2.video, args2.output, args2.model, args2.det_classes)
