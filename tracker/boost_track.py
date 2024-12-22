@@ -174,6 +174,7 @@ class BoostTrack(object):
         # Rescale
         scale = min(img_tensor.shape[2] / img_numpy.shape[0], img_tensor.shape[3] / img_numpy.shape[1])
         dets = deepcopy(dets)
+        print(len(dets))
         dets[:, :4] /= scale
 
         if self.ecc is not None:
