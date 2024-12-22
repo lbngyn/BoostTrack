@@ -47,7 +47,7 @@ class YoloV10Detector:
         img_tensor = img_tensor.to(self.device)
         return img_tensor
 
-    def postprocess(self, results, img_shape):
+    def postprocess(self, results, img_shape, det_classes):
         """
         Xử lý kết quả dự đoán.
         :param results: Kết quả từ model (raw output).
@@ -93,13 +93,13 @@ class YoloV10Detector:
         # Đưa kết quả về dạng [xmin, ymin, xmax, ymax, conf]
         results = []
         for box, conf, label in zip(boxes, confidences, labels):
-            if label != 0: continue
+            if label not in det_classes: continue
             results.append([float(box[0]), float(box[1]), float(box[2]), float(box[3]), float(conf)])
 
         return results
 
 
-    def predict(self, img):
+    def predict(self, img, det_classes):
         """
         Chạy dự đoán trên ảnh.
         :param img: Ảnh numpy (H x W x C).
@@ -111,7 +111,7 @@ class YoloV10Detector:
             results = self.model(img_tensor)
         
         # Lọc kết quả và post-process
-        final_results = self.postprocess(results, img.shape[:2])
+        final_results = self.postprocess(results, img.shape[:2], det_classes)
         return final_results
 
     def dump_cache(self):
