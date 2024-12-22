@@ -108,5 +108,5 @@ if __name__ == "__main__":
     parser.add_argument("--btpp_arg_no_vt", action="store_true", help="BoostTrack++ arg. Mark if varying threshold should NOT be used for the detection confidence boost.")
     parser.add_argument("--no_post", action="store_true", help="do not run post-processing.")
     args = parser.parse_args()
-
+    print(f"Conf after parsing: {args.conf}")  # Đảm bảo không bị ghi đè
     process_video(args.video, args.output, args.model, args.det_classes, args)
