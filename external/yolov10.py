@@ -97,7 +97,7 @@ class YoloV10Detector:
         return results
 
 
-    def predict(self, img, det_classes):
+    def predict(self, img, det_classes=[0]):
         """
         Chạy dự đoán trên ảnh.
         :param img: Ảnh numpy (H x W x C).

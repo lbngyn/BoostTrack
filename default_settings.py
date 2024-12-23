@@ -36,7 +36,7 @@ class GeneralSettings:
     }
 
     dataset_specific_settings: Dict[str, Dict[str, Union[float, bool, int]]] = {
-        "mot17": {"det_thresh": 0.6},
+        "mot17": {"det_thresh": 0.5},
         "mot20": {"det_thresh": 0.4},
     }
 
