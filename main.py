@@ -97,7 +97,7 @@ def main():
             results[video_name] = []
 
         # img = img.cuda()
-        img_path = os.path.join('/kaggle/input/mot20-converted-coco/MOT20/train', info[4][0])
+        img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT20/train', info[4][0])
         # print(img_path)
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
