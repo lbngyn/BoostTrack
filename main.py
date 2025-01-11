@@ -72,6 +72,7 @@ def main():
     BoostTrackPlusPlusSettings.values['use_rich_s'] = not args.btpp_arg_iou_boost
     BoostTrackPlusPlusSettings.values['use_sb'] = not args.btpp_arg_no_sb
     BoostTrackPlusPlusSettings.values['use_vt'] = not args.btpp_arg_no_vt
+    print('GeneralSettings of det_threshold iss:', GeneralSettings['det_thresh'])
 
     detector_path, size = get_detector_path_and_im_size(args)
     detector_path = '/kaggle/input/yolov10x/other/default/1/yolov10x.pt'
@@ -97,7 +98,7 @@ def main():
             results[video_name] = []
 
         # img = img.cuda()
-        img_path = os.path.join('/kaggle/input/mot17-converted-coco/MOT17/train', info[4][0])
+        img_path = os.path.join('/kaggle/input/mot20-converted-coco/MOT20/train', info[4][0])
         # print(img_path)
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -114,7 +115,7 @@ def main():
             tracker = BoostTrack(video_name=video_name)
 
         # Sử dụng YOLOv10x để dự đoán
-        pred = det.predict(img)
+        pred = det.predict(img, conf_threshold=GeneralSettings['det_thresh'])
         if pred == []: continue
         pred = torch.tensor(pred)
 

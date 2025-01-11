@@ -97,7 +97,7 @@ class YoloV10Detector:
         return results
 
 
-    def predict(self, img, det_classes=[0]):
+    def predict(self, img, conf_threshold =0.5, det_classes=[0]):
         """
         Chạy dự đoán trên ảnh.
         :param img: Ảnh numpy (H x W x C).
@@ -106,7 +106,7 @@ class YoloV10Detector:
         img_tensor = self.preprocess(img)
         with torch.no_grad():
             # Dự đoán và nhận kết quả
-            results = self.model(img_tensor)
+            results = self.model(img_tensor, conf=conf_threshold)
         
         # Lọc kết quả và post-process
         final_results = self.postprocess(results, img.shape[:2], det_classes)
