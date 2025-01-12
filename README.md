@@ -52,6 +52,7 @@ Due to numpy version error, single line of code in mapping.py file from onnx mod
 **Step 2.** Download the model weights and set up the datasets.
 
 We use the same weights as [Deep OC-SORT](https://github.com/GerardMaggiolino/Deep-OC-SORT/tree/main). The weights can be downloaded from the [link](https://drive.google.com/drive/folders/15hZcR4bW_Z9hEaXXjeWhQl_jwRKllauG?usp=sharing).
+*Notice* In this modified version of the code, we will use the checkpoint yolov10x.pt instead of the models in the original code. You can download the checkpoint of Yolov10 x at the link:[Yolo](https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov10x.pt)
 
 *2.1.* Download the weights and place to BoostTrack/external/weights folder.
 

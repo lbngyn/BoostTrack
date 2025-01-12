@@ -75,11 +75,11 @@ def main():
     print('GeneralSettings of det_threshold iss:', GeneralSettings['det_thresh'])
 
     detector_path, size = get_detector_path_and_im_size(args)
-    detector_path = '/kaggle/input/yolov10x/other/default/1/yolov10x.pt'
+    detector_path = 'external\weights\yolov10x.pt'
     # Thay thế YOLOX bằng YOLOv10x
     det = YoloV10Detector(model_path=detector_path, img_size=size)
     
-    loader = dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
+    loader, data_dir= dataset.get_mot_loader(args.dataset, args.test_dataset, size=size)
 
     tracker = None
     results = {}
@@ -98,7 +98,9 @@ def main():
             results[video_name] = []
 
         # img = img.cuda()
-        img_path = os.path.join('/kaggle/input/mot20-converted-coco/MOT20/train', info[4][0])
+        print(info)
+
+        img_path = os.path.join(data_dir, info[4][0])
         # print(img_path)
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
